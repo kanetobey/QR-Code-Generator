@@ -1,0 +1,188 @@
+:root {
+    --bcg-color: #0b0b0b;
+    --primary-color: #d32f2f;
+    --border-radius: 12px;
+    --secondary-color: #ffffff;
+    --accent-color: #d32f2f;
+    --button-hover-color: #f44336;
+    --border-color: #7c7c7c;
+    --box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.6);
+    --transition-speed: 0.3s ease-in-out;
+    --font-family: 'Poppins', sans-serif;
+    --anime-font-family: 'Noto Sans JP', sans-serif;
+    --border-spacing: 20px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0b0b0b, #1f1f1f);
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.main-content {
+    flex-grow: 1; /* Ensures the main content grows and takes up available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.box {
+    background: var(--primary-color);
+    padding: 40px;
+    width: 400px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.8);
+}
+
+.qr-header h1 {
+    font-family: var(--anime-font-family);
+    font-size: 30px;
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.qr-header input,
+.qr-header select {
+    width: 100%;
+    margin-block: 12px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    font-size: 18px;
+    outline: none;
+    border: 2px solid var(--border-color);
+    background-color: #7c1313;
+    color: var(--secondary-color);
+    transition: background-color var(--transition-speed);
+}
+
+.qr-header input:focus,
+.qr-header select:focus {
+    background-color: #a81919;
+}
+
+.qr-header label {
+    font-family: var(--anime-font-family);
+    color: var(--secondary-color);
+    font-size: 20px;
+}
+
+.qr-header div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.qr-footer {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+}
+
+.qr-footer a {
+    background-color: var(--accent-color);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 14px 36px;
+    color: var(--secondary-color);
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.qr-footer a:hover {
+    background-color: var(--button-hover-color);
+    transform: translateY(-5px);
+}
+
+.qr-body {
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.qr-body img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-block: 10px;
+    padding: 20px;
+    border: 0.5px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.qr-header input[type="color"] {
+    padding: 0;
+    width: 100%;
+    height: 40px;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
+    background-color: #7c1313;
+    margin-block: 12px;
+    cursor: pointer;
+}
+
+/* Footer Styles */
+
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #0b0b0b;
+    color: #ffffff;
+    font-family: var(--anime-font-family);
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    margin-top: auto; /* Ensures footer sticks to the bottom */
+    position: relative; /* Change from absolute to relative */
+}
+
+footer:hover {
+    background: linear-gradient(135deg, #d32f2f, #ff4081);
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+@media screen and (max-width: 520px) {
+    .box {
+        width: 90%;
+    }
+
+    .qr-footer a {
+        padding: 12px 28px;
+        font-size: 16px;
+    }
+}
+
+#url-display {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--secondary-color);
+    font-size: 16px;
+    word-wrap: break-word;
+}
