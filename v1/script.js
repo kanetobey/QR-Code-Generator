@@ -1,3 +1,4 @@
+// This is the original code (Version 1.0) that Version 2.0 is based on. Preserved unchanged.
 const qrText = document.getElementById('qr-text');
 const sizes = document.getElementById('sizes');
 const colorPicker = document.getElementById('color');

@@ -1,53 +1,261 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="QR Code Generator — create beautiful, customizable QR codes for links, Wi-Fi, contacts and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="v2.css">
     <title>QR Code Generator</title>
 </head>
-<body>
-    <div class="main-content">
-        <div class="box">
-            <div class="qr-header">
-                <h1>Generate QR Code</h1>
-                <input type="text" placeholder="Type your text or link here" id="qr-text">
-                <div>
-                    <label for="sizes">Select Size:</label>
-                    <select id="sizes">
-                        <option value="100">100x100</option>
-                        <option value="200">200x200</option>
-                        <option value="300">300x300</option>
-                        <option value="400">400x400</option>
-                        <option value="500">500x500</option>
-                        <option value="600">600x600</option>
-                        <option value="700">700x700</option>
-                        <option value="800">800x800</option>
-                        <option value="900">900x900</option>
-                        <option value="1000">1000x1000</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="color">Select Color:</label>
-                    <input type="color" id="color" value="#d32f2f">
-                </div>
-            </div>
-            <div class="qr-body"></div>
-            <p id="url-display"></p> <!-- Display the URL here -->
-            <div class="qr-footer">
-                <a href="" id="generateBtn">Generate</a>
-                <a href="" id="downloadBtn" download="QR_Code.png">Download</a>
-            </div>
+<body data-version="2">
+
+    <!-- Version + theme controls (always visible, top right) -->
+    <div class="top-controls">
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle light / dark theme" title="Toggle theme">🌙</button>
+        <div class="version-toggle" role="group" aria-label="Switch app version">
+            <button id="btn-v1" class="ver-btn" aria-pressed="false">1.0</button>
+            <button id="btn-v2" class="ver-btn active" aria-pressed="true">2.0</button>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        Copyright © Kane Tobey. All Rights Reserved.
-    </footer>
+    <!-- ============ VERSION 1.0 (original app, untouched, in v1/) ============ -->
+    <div id="v1-view" class="v1-view" hidden>
+        <iframe id="v1-frame" data-src="v1/index.html" title="QR Code Generator — Version 1.0"></iframe>
+    </div>
 
-    <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- ============ VERSION 2.0 ============ -->
+    <div id="v2-view" class="v2-view">
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                        <path d="M14 14h3v3h-3zM20 14h1M14 20h1M20 20h1"/>
+                    </svg>
+                </span>
+                <div>
+                    <h1>QR Code Generator</h1>
+                    <p class="tagline">Version 2.0 — make it, style it, scan it.</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="layout">
+            <!-- ------------ Left: content + style controls ------------ -->
+            <section class="controls">
+
+                <div class="card" id="content-card">
+                    <h2 class="card-title">What goes in it</h2>
+                    <div class="tabs" role="tablist" aria-label="QR content type">
+                        <button class="tab active" data-tab="link" role="tab" aria-selected="true">🔗 Link</button>
+                        <button class="tab" data-tab="text" role="tab" aria-selected="false">✍️ Text</button>
+                        <button class="tab" data-tab="wifi" role="tab" aria-selected="false">📶 Wi-Fi</button>
+                        <button class="tab" data-tab="vcard" role="tab" aria-selected="false">👤 Contact</button>
+                        <button class="tab" data-tab="email" role="tab" aria-selected="false">✉️ Email</button>
+                        <button class="tab" data-tab="sms" role="tab" aria-selected="false">💬 SMS</button>
+                        <button class="tab" data-tab="phone" role="tab" aria-selected="false">📞 Call</button>
+                    </div>
+
+                    <div class="panel active" data-panel="link">
+                        <label for="f-link-url">Website URL</label>
+                        <input type="url" id="f-link-url" placeholder="example.com or https://…" autocomplete="off">
+                        <p class="hint" id="link-hint" hidden>“https://” will be added automatically.</p>
+                    </div>
+
+                    <div class="panel" data-panel="text">
+                        <label for="f-text">Your text</label>
+                        <textarea id="f-text" rows="4" placeholder="Any message, note, serial number…"></textarea>
+                        <p class="hint"><span id="text-count">0</span> characters</p>
+                    </div>
+
+                    <div class="panel" data-panel="wifi">
+                        <div class="field-grid">
+                            <div class="field span-2">
+                                <label for="f-wifi-ssid">Network name (SSID)</label>
+                                <input type="text" id="f-wifi-ssid" placeholder="MyHomeWiFi" autocomplete="off">
+                            </div>
+                            <div class="field span-2">
+                                <label for="f-wifi-pass">Password</label>
+                                <div class="input-row">
+                                    <input type="password" id="f-wifi-pass" placeholder="Password" autocomplete="off">
+                                    <button type="button" class="mini-btn" id="wifi-eye" aria-label="Show password">👁</button>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="f-wifi-enc">Security</label>
+                                <select id="f-wifi-enc">
+                                    <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">None (open)</option>
+                                </select>
+                            </div>
+                            <div class="field checkbox-field">
+                                <label class="check"><input type="checkbox" id="f-wifi-hidden"> Hidden network</label>
+                            </div>
+                        </div>
+                        <p class="hint">Scanning this joins the Wi-Fi automatically — no typing passwords.</p>
+                    </div>
+
+                    <div class="panel" data-panel="vcard">
+                        <div class="field-grid">
+                            <div class="field"><label for="f-vc-first">First name</label><input type="text" id="f-vc-first" placeholder="Kane"></div>
+                            <div class="field"><label for="f-vc-last">Last name</label><input type="text" id="f-vc-last" placeholder="Tobey"></div>
+                            <div class="field"><label for="f-vc-phone">Phone</label><input type="tel" id="f-vc-phone" placeholder="+1 555 123 4567"></div>
+                            <div class="field"><label for="f-vc-email">Email</label><input type="email" id="f-vc-email" placeholder="you@email.com"></div>
+                            <div class="field"><label for="f-vc-org">Company</label><input type="text" id="f-vc-org" placeholder="Company"></div>
+                            <div class="field"><label for="f-vc-title">Job title</label><input type="text" id="f-vc-title" placeholder="Title"></div>
+                            <div class="field span-2"><label for="f-vc-url">Website</label><input type="url" id="f-vc-url" placeholder="https://…"></div>
+                        </div>
+                        <p class="hint">Scanning adds this contact card straight to the phone.</p>
+                    </div>
+
+                    <div class="panel" data-panel="email">
+                        <label for="f-em-to">To</label>
+                        <input type="email" id="f-em-to" placeholder="someone@email.com">
+                        <label for="f-em-sub">Subject</label>
+                        <input type="text" id="f-em-sub" placeholder="Subject (optional)">
+                        <label for="f-em-body">Message</label>
+                        <textarea id="f-em-body" rows="3" placeholder="Message (optional)"></textarea>
+                    </div>
+
+                    <div class="panel" data-panel="sms">
+                        <label for="f-sms-num">Phone number</label>
+                        <input type="tel" id="f-sms-num" placeholder="+1 555 123 4567">
+                        <label for="f-sms-msg">Message</label>
+                        <textarea id="f-sms-msg" rows="3" placeholder="Pre-filled message (optional)"></textarea>
+                    </div>
+
+                    <div class="panel" data-panel="phone">
+                        <label for="f-ph-num">Phone number</label>
+                        <input type="tel" id="f-ph-num" placeholder="+1 555 123 4567">
+                        <p class="hint">Scanning starts a call to this number.</p>
+                    </div>
+                </div>
+
+                <div class="card" id="style-card">
+                    <h2 class="card-title">Make it yours</h2>
+
+                    <label class="group-label">Presets</label>
+                    <div class="presets" id="presets"></div>
+
+                    <div class="style-grid">
+                        <div class="field">
+                            <label for="s-fg">Code color</label>
+                            <input type="color" id="s-fg" value="#6d28d9">
+                        </div>
+                        <div class="field" id="fg2-field">
+                            <label for="s-fg2">Second color</label>
+                            <input type="color" id="s-fg2" value="#0e7490">
+                        </div>
+                        <div class="field">
+                            <label for="s-bg">Background</label>
+                            <input type="color" id="s-bg" value="#ffffff">
+                        </div>
+                        <div class="field checkbox-field">
+                            <label class="check"><input type="checkbox" id="s-gradient" checked> Gradient</label>
+                            <label class="check"><input type="checkbox" id="s-transparent"> Transparent bg</label>
+                        </div>
+                        <div class="field">
+                            <label for="s-dots">Pattern style</label>
+                            <select id="s-dots">
+                                <option value="square">Square (classic)</option>
+                                <option value="rounded" selected>Rounded</option>
+                                <option value="dots">Dots</option>
+                                <option value="extra-rounded">Extra rounded</option>
+                                <option value="classy">Classy</option>
+                                <option value="classy-rounded">Classy rounded</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="s-corners">Corner style</label>
+                            <select id="s-corners">
+                                <option value="square">Square</option>
+                                <option value="extra-rounded" selected>Rounded</option>
+                                <option value="dot">Dot</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="s-ec">Error correction</label>
+                            <select id="s-ec" title="Higher = more damage-resistant, denser code">
+                                <option value="L">L — Light (7%)</option>
+                                <option value="M" selected>M — Medium (15%)</option>
+                                <option value="Q">Q — Strong (25%)</option>
+                                <option value="H">H — Max (30%)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="s-logo">Center logo</label>
+                            <div class="input-row">
+                                <label class="file-btn" for="s-logo">Upload image</label>
+                                <input type="file" id="s-logo" accept="image/*" hidden>
+                                <button type="button" class="mini-btn" id="logo-remove" hidden aria-label="Remove logo">✕</button>
+                            </div>
+                        </div>
+                        <div class="field span-2" id="logo-size-field" hidden>
+                            <label for="s-logo-size">Logo size <span id="logo-size-val">30%</span></label>
+                            <input type="range" id="s-logo-size" min="15" max="45" value="30">
+                            <p class="hint">Error correction is bumped to Max (H) while a logo is on.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ------------ Right: live preview + export ------------ -->
+            <section class="preview-col">
+                <div class="card preview-card">
+                    <h2 class="card-title">Live preview</h2>
+                    <div class="qr-stage" id="qr-stage">
+                        <div id="qr-preview"></div>
+                        <div class="qr-empty" id="qr-empty">
+                            <span class="qr-empty-icon">✨</span>
+                            <p>Start typing on the left —<br>your QR code appears instantly.</p>
+                        </div>
+                    </div>
+                    <div class="scan-badge" id="scan-badge" hidden></div>
+                </div>
+
+                <div class="card export-card">
+                    <h2 class="card-title">Export</h2>
+                    <label class="group-label">Download size</label>
+                    <div class="size-chips" id="size-chips">
+                        <button class="chip" data-size="512">512</button>
+                        <button class="chip active" data-size="1024">1024</button>
+                        <button class="chip" data-size="2048">2048</button>
+                        <button class="chip" data-size="4096">4096</button>
+                    </div>
+                    <div class="export-btns">
+                        <button class="btn primary" id="dl-png">⬇ PNG</button>
+                        <button class="btn" id="dl-svg">SVG</button>
+                        <button class="btn" id="dl-jpeg">JPEG</button>
+                        <button class="btn" id="copy-btn">📋 Copy</button>
+                    </div>
+                </div>
+
+                <div class="card history-card">
+                    <div class="card-title-row">
+                        <h2 class="card-title">Recent codes</h2>
+                        <button class="mini-btn" id="history-clear" hidden>Clear</button>
+                    </div>
+                    <div class="history" id="history">
+                        <p class="hint" id="history-empty">Codes you download or copy show up here.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            Copyright © Kane Tobey. All Rights Reserved.
+        </footer>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1/lib/qr-code-styling.js"></script>
+    <script src="v2.js"></script>
 </body>
 </html>
